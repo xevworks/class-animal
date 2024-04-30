@@ -1,82 +1,56 @@
+import unittest
+
 class Animal:
     animals_list = []
 
     def __init__(self, animal_type, legs):
         self.animal_type = animal_type
         self.legs = legs
-        if self.animal_type not in self.animals_list:
-            self.animals_list.append(self.animal_type)
+        if self.animal_type not in Animal.animals_list:
+            Animal.animals_list.append(self.animal_type)
 
     def display_lists(self):
-        print(self.animals_list)
+        return str(self.animals_list)
 
     def describe_animal(self):
-        print(f"The {self.animal_type} has {self.legs} legs.")
+        return f"The {self.animal_type} has {self.legs} legs."
     
     def sort_animals(self):
-        self.animals_list.sort()
-        print(self.animals_list)
+        Animal.animals_list.sort()
+        return str(Animal.animals_list)
     
     def compare_legs(self, other):
         if self.legs > other.legs:
-            print(f"{self.animal_type} > {other.animal_type}.")
+            return f"{self.animal_type} > {other.animal_type}."
         elif self.legs < other.legs:
-            print(f"{self.animal_type} < {other.animal_type}.")
+            return f"{self.animal_type} < {other.animal_type}."
         else:
-            print(f"{self.animal_type} = {other.animal_type}.")
-    
+            return f"{self.animal_type} = {other.animal_type}."
 
-dog = Animal("Dog", 4)
-spider = Animal("Spider", 8)
-bird = Animal("Bird", 2)
-crab = Animal("Crab", 6)
+class TestAnimal(unittest.TestCase):
+    def setUp(self):
+        # Clear the list for each test to prevent test interference
+        Animal.animals_list = []
+        self.dog = Animal("Dog", 4)
+        self.spider = Animal("Spider", 8)
+        self.cat = Animal("Cat", 4)  # Add cat here if needed for sort
 
-dog.describe_animal()
-# dog.display_lists()
+    def test_display_lists(self):
+        self.assertEqual(self.dog.display_lists(), "['Dog', 'Spider', 'Cat']")
 
-spider.describe_animal()
-# spider.display_lists()
+    def test_describe_animal(self):
+        self.assertEqual(self.dog.describe_animal(), "The Dog has 4 legs.")
 
-dog.compare_legs(spider)
-bird.sort_animals()
-class Animal:
-    animals_list = []
+    def test_sort_animals(self):
+        Animal.animals_list.remove('Spider')  # Assuming Spider not needed for this test
+        self.assertEqual(self.dog.sort_animals(), "['Cat', 'Dog']")
 
-    def __init__(self, animal_type, legs):
-        self.animal_type = animal_type
-        self.legs = legs
-        if self.animal_type not in self.animals_list:
-            self.animals_list.append(self.animal_type)
+    def test_compare_legs(self):
+        self.assertEqual(self.dog.compare_legs(self.spider), "Dog < Spider.")
 
-    def display_lists(self):
-        print(self.animals_list)
+    def test_compare_legs_equal(self):
+        another_dog = Animal("Another Dog", 4)
+        self.assertEqual(self.dog.compare_legs(another_dog), "Dog = Another Dog.")
 
-    def describe_animal(self):
-        print(f"The {self.animal_type} has {self.legs} legs.")
-    
-    def sort_animals(self):
-        self.animals_list.sort()
-        print(self.animals_list)
-    
-    def compare_legs(self, other):
-        if self.legs > other.legs:
-            print(f"{self.animal_type} > {other.animal_type}.")
-        elif self.legs < other.legs:
-            print(f"{self.animal_type} < {other.animal_type}.")
-        else:
-            print(f"{self.animal_type} = {other.animal_type}.")
-    
-
-dog = Animal("Dog", 4)
-spider = Animal("Spider", 8)
-bird = Animal("Bird", 2)
-crab = Animal("Crab", 6)
-
-dog.describe_animal()
-# dog.display_lists()
-
-spider.describe_animal()
-# spider.display_lists()
-
-dog.compare_legs(spider)
-bird.sort_animals()
+if __name__ == '__main__':
+    unittest.main()
